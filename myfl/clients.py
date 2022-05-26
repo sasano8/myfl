@@ -20,6 +20,7 @@ def remote(path: str, remote_path: str):
 
 @contextmanager
 def ssh(
+    path: str,
     username: str,
     hostname: str,
     port: int = 22,
@@ -48,7 +49,7 @@ def ssh(
 
 
 @contextmanager
-def git_http(url: str):
+def git_http(path: str, url: str):
     if url[:-4] != ".git":
         raise Exception()
 
@@ -59,7 +60,7 @@ def git_http(url: str):
 
 
 @contextmanager
-def web(url: str):
+def web(path: str, url: str):
     client = Client(name="myfl", ws=FileSystemWorkspace(url))
     assert client.name == "myfl"
     raise NotImplementedError()
