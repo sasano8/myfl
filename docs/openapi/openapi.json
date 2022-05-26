@@ -1,0 +1,212 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/fedml/fedavg": {
+            "post": {
+                "summary": "Fedavg",
+                "description": "${workspaceFolder}/fedml_experiments/standalone/fedavg",
+                "operationId": "fedavg_fedml_fedavg_post",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Gpu",
+                            "type": "integer"
+                        },
+                        "name": "gpu",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Dataset",
+                            "type": "string"
+                        },
+                        "name": "dataset",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Data Dir",
+                            "type": "string"
+                        },
+                        "name": "data_dir",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Model",
+                            "enum": [
+                                "rnn"
+                            ],
+                            "type": "string",
+                            "default": "rnn"
+                        },
+                        "name": "model",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Partition Method",
+                            "type": "string"
+                        },
+                        "name": "partition_method",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Client Num In Total",
+                            "type": "integer"
+                        },
+                        "name": "client_num_in_total",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Client Num Per Round",
+                            "type": "integer"
+                        },
+                        "name": "client_num_per_round",
+                        "in": "query"
+                    },
+                    {
+                        "description": "ラウンド数？",
+                        "required": false,
+                        "schema": {
+                            "title": "Comm Round",
+                            "type": "integer",
+                            "description": "ラウンド数？",
+                            "default": 1000
+                        },
+                        "name": "comm_round",
+                        "in": "query"
+                    },
+                    {
+                        "description": "データセットをいくつかに分割し、分割された塊の数",
+                        "required": true,
+                        "schema": {
+                            "title": "Batch Size",
+                            "type": "integer",
+                            "description": "データセットをいくつかに分割し、分割された塊の数"
+                        },
+                        "name": "batch_size",
+                        "in": "query"
+                    },
+                    {
+                        "description": "batch_sizeを元のデータセット分反復することを1エポック。通常数エポック実行する。",
+                        "required": false,
+                        "schema": {
+                            "title": "Epochs",
+                            "type": "integer",
+                            "description": "batch_sizeを元のデータセット分反復することを1エポック。通常数エポック実行する。",
+                            "default": 1
+                        },
+                        "name": "epochs",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Client Optimizer",
+                            "type": "string"
+                        },
+                        "name": "client_optimizer",
+                        "in": "query"
+                    },
+                    {
+                        "description": "学習率のこと？",
+                        "required": true,
+                        "schema": {
+                            "title": "Lr",
+                            "type": "number",
+                            "description": "学習率のこと？"
+                        },
+                        "name": "lr",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Ci",
+                            "type": "integer"
+                        },
+                        "name": "ci",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HTTPValidationError": {
+                "title": "HTTPValidationError",
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                }
+            },
+            "ValidationError": {
+                "title": "ValidationError",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "loc": {
+                        "title": "Location",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "msg": {
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "title": "Error Type",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

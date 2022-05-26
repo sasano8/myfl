@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "bungcip.better-toml",
+    "codezombiech.gitignore",
+    "EditorConfig.EditorConfig",
+    "redhat.vscode-yaml",
+    "sidneys1.gitconfig",
+  ]
+}

@@ -1,0 +1,6 @@
+class DataLoader:
+    async def load(self, **kwargs):
+        ...
+
+    async def save(self, **kwargs):
+        ...
