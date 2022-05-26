@@ -90,6 +90,12 @@ class Client(BaseModel):
     model_store: IModelStore = NotImplementedModelStore()
     fl_config_store: IFLConfigStore = NotImplementedFLConfigStore()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        return None
+
     @classmethod
     def create(cls, kwargs: dict):
         return cls(**{k: v for k, v in kwargs.items() if v is not None})
