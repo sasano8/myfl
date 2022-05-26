@@ -3,10 +3,6 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Protocol
 
-from .cli import create_cli
-from .api import create_api
-from myfl.core.protocols import Client
-
 
 class IItem:
     name: str
@@ -83,9 +79,17 @@ class DummyFLConfigStore:
         return [Item(name=x) for x in ["a", "b", "c"]]
 
 
-def build_cli(client: Client):
-    return create_cli(client)
+class Client(BaseModel):
+    class Config:
+        arbitrary_types_allowed = True
 
+    name: str
+    ws: IWorkspace = NotImplementedWorkspace()
+    data_store: IDataStore = NotImplementedDataStore()
+    base_model_store: IBaseModelStore = NotImplementedBaseModelStore()
+    model_store: IModelStore = NotImplementedModelStore()
+    fl_config_store: IFLConfigStore = NotImplementedFLConfigStore()
 
-def build_api(client: Client):
-    return create_api(client)
+    @classmethod
+    def create(cls, kwargs: dict):
+        return cls(**{k: v for k, v in kwargs.items() if v is not None})
