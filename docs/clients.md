@@ -20,6 +20,10 @@ Share files with remote ssh workspaces.
 
 Share files with git repository.
 
+## sql
+
+Share files with git repository.
+
 ## web
 
 Share files with {PKG_NAME} web api.

@@ -1,9 +1,4 @@
-import json
-import typer
-from .protocols import App
-
-
-def create_cli(app: App):
+def create_cli(app: "App"):
     ...
 
 
