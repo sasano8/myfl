@@ -89,6 +89,56 @@ def pytorch(path: str, url: str):
         yield client
 
 
+@contextmanager
+def kaggle(path: str, url: str):
+    with Client(name="myfl", ws=FileSystemWorkspace(path)) as client:
+        assert client.name == "myfl"
+        raise NotImplementedError()
+        yield client
+
+    import kaggle
+
+    kaggle.api.authenticate()
+    kaggle.api.datasetdownload_files("", path="adsfa", unzip=True)
+
+    LICENSES = Literal[
+        "unkown",
+        "CC0-1.0",
+        "CC-BY-SA-4.0",
+        "GPL-2.0",
+        "ODbL-1.0",
+        "CC-BY-NC-SA-4.0",
+        "unknown",
+        "DbCL-1.0",
+        "CC-BY-SA-3.0",
+        "copyright-authors",
+        "other",
+        "reddit-api",
+        "world-bank",
+    ]
+
+    ata_json = {
+        "title": title,
+        "id": f"{k_id}/{title}",
+        "subtitle": subtitle,
+        "description": description,
+        "isPrivate": isPrivate,
+        "licenses": [{"name": licenses}],
+        "keywords": [],
+        "collaborators": [],
+        "data": [],
+    }
+
+
+@contextmanager
+def openml(path: str, url: str):
+    # https://www.openml.org/search?type=benchmark&study_type=task
+    with Client(name="myfl", ws=FileSystemWorkspace(path)) as client:
+        assert client.name == "myfl"
+        raise NotImplementedError()
+        yield client
+
+
 false = False
 true = True
 null = None
