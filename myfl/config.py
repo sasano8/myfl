@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from .clients import local, remote, ssh, git_http, web, sql, pytorch
+from .clients import local, web, remote, ssh, git_http, sql, pytorch
 from .api import create_api
 from .cli import create_cli
 from .core import Client
@@ -8,7 +8,7 @@ from .core.exceptions import MyflInternalException
 
 
 pkg_name = Path(__file__).parent.name
-clients = [local, remote, ssh, git_http, web, sql, pytorch]
+clients = [local, web, remote, ssh, git_http, sql, pytorch]
 
 
 def build_cli(client: Client):

@@ -3,7 +3,7 @@ from myfl.core.protocols import Client
 from pathlib import Path
 from contextlib import contextmanager
 
-__all__ = ["local", "remote", "ssh", "git_http", "web", "sql", "pytorch"]
+__all__ = ["local", "web", "remote", "ssh", "git_http", "sql", "pytorch"]
 
 
 @contextmanager
@@ -12,6 +12,14 @@ def local(path: str):
         name=Path(__file__).parent.name, ws=FileSystemWorkspace(path)
     ) as client:
         assert client.name == "myfl"
+        yield client
+
+
+@contextmanager
+def web(path: str, url: str):
+    with Client(name="myfl", ws=FileSystemWorkspace(path)) as client:
+        assert client.name == "myfl"
+        raise NotImplementedError()
         yield client
 
 
@@ -67,14 +75,6 @@ def git_http(path: str, url: str):
 
 @contextmanager
 def sql(path: str, connection_string: str, lib: str = ""):
-    with Client(name="myfl", ws=FileSystemWorkspace(path)) as client:
-        assert client.name == "myfl"
-        raise NotImplementedError()
-        yield client
-
-
-@contextmanager
-def web(path: str, url: str):
     with Client(name="myfl", ws=FileSystemWorkspace(path)) as client:
         assert client.name == "myfl"
         raise NotImplementedError()

@@ -1,5 +1,15 @@
 import os
 import json
+from myfl.core.protocols import (
+    IConfigStore,
+    IBaseModelStore,
+    IDataStore,
+    IFLConfigStore,
+    IModelStore,
+    IWorkspace,
+)
+from myfl.core.exceptions import ConfigKeyError
+from pathlib import Path
 
 
 def get_workspace(path) -> "FileSystemWorkspace":
@@ -75,28 +85,119 @@ class FileSystemWorkspace:
             with open(file_ignore, "w") as f:
                 f.write("""cache""")
 
-    # def load(self):
-    #     with open(self.file_conf) as f:
-    #         conf = json.load(f)
 
-    #     with open(self.file_override) as f:
-    #         override = json.load(f)
-    #         conf = deep_merge(conf, override)
+class ConfigStore(IConfigStore):
+    def __init__(self, ws: FileSystemWorkspace):
+        self.ws = ws
+        self.path: Path = self.ws.file_conf
 
-    #     return conf
+    def _write(self, conf):
+        with open(self.path, "w") as f:
+            json.dump(conf, f, indent=2, ensure_ascii=False)
 
-    # def get(self, config_name: str = None):
-    #     conf = self.load()
+    def init(self):
+        if not self.path.exists():
+            conf = {"default": {}}
+            self._write(conf)
 
-    #     if config_name is None:
-    #         config_name = "default"
+    def list(self):
+        with open(self.path) as f:
+            conf = json.load(f)
 
-    #     try:
-    #         return conf[config_name]
-    #     except KeyError:
-    #         raise ConfigKeyError(config_name)
+        # with open(self.file_override) as f:
+        #     override = json.load(f)
+        #     conf = deep_merge(conf, override)
 
-    # def get_stores(self):
-    #     from .store import LocalConfigStore, LocalDataStore, LocalModelStore
+        return conf
 
-    #     return LocalConfigStore(self), LocalDataStore(self), LocalModelStore(self)
+    def get(self, config_name: str = "default"):
+        conf = self.list()
+
+        try:
+            return conf[config_name]
+        except KeyError:
+            raise ConfigKeyError(config_name)
+
+    def save(self, data, name):
+        conf = self.list()
+        conf[name] = data
+        self._write(conf)
+
+
+class DatasetStore(IDataStore):
+    def __init__(self, ws: FileSystemWorkspace):
+        self.ws = ws
+        self.path: Path = self.ws.file_conf
+
+    def init(self):
+        if not self.path.exists():
+            os.mkdir(self.path)
+
+    def list(self):
+        return [x.name for x in self.path.iterdir()]
+
+    def get(self, name: str):
+        with open(self.path / name) as f:
+            return f.read()
+
+    def get_info(self, name: str):
+        ...
+
+    def save(self, data, name: str):
+        with open(self.path / name, "w") as f:
+            f.write(data)
+
+
+class ModelStore(IDataStore):
+    def __init__(self, ws: FileSystemWorkspace):
+        self.ws = ws
+        self.path: Path = self.ws.file_conf
+
+    def init(self):
+        if not self.path.exists():
+            os.mkdir(self.path)
+
+    def list(self):
+        return [x.name for x in self.path.iterdir()]
+
+    def get(self, name: str):
+        with open(self.path / name) as f:
+            return f.read()
+
+    def get_info(self, name: str):
+        ...
+
+    def save(self, model, name: str):
+        import torch.nn as nn
+        import torch
+        import shutil
+
+        if isinstance(model, nn.Module):
+            path = self.path / name
+            shutil.rmtree(path)
+            os.mkdir(path)
+            with open(path / "info", "w") as f:
+                json.dump(
+                    {"name": name, "type": "mymodel", "fw": "pytorch"},
+                    f,
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            torch.save(model.state_dict(), path / "model")
+        else:
+            raise TypeError()
+
+    def load(self, name: str):
+        path = self.path / name
+        with open(path / "info") as f:
+            meta = json.load(f)
+
+        if meta["fw"] == "pytorch":
+            import torch
+
+            model = define_cnn()
+            model.load_state_dict(torch.load(path / "model"))
+        else:
+            raise TypeError()
+
+        return meta, model

@@ -19,6 +19,11 @@ class IWorkspace(Protocol):
         raise NotImplementedError()
 
 
+class IConfigStore(Protocol):
+    def list(self):
+        raise NotImplementedError()
+
+
 class IDataStore(Protocol):
     def list(self):
         raise NotImplementedError()
@@ -43,6 +48,10 @@ class NotImplementedWorkspace(IWorkspace):
     ...
 
 
+class NotImplementedConfigStore(IConfigStore):
+    ...
+
+
 class NotImplementedDataStore(IDataStore):
     ...
 
@@ -57,6 +66,11 @@ class NotImplementedModelStore(IModelStore):
 
 class NotImplementedFLConfigStore(IFLConfigStore):
     ...
+
+
+class DummyConfigStore:
+    def list(self):
+        return [Item(name=x) for x in ["a", "b", "c"]]
 
 
 class DummyDataStore:
@@ -85,6 +99,7 @@ class Client(BaseModel):
 
     name: str
     ws: IWorkspace = NotImplementedWorkspace()
+    config_store: IConfigStore = NotImplementedConfigStore()
     data_store: IDataStore = NotImplementedDataStore()
     base_model_store: IBaseModelStore = NotImplementedBaseModelStore()
     model_store: IModelStore = NotImplementedModelStore()
