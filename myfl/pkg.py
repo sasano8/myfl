@@ -75,11 +75,10 @@ PKG_CONFIG = PkgConfig(
 )
 
 
-def run_cli():
+def get_cli():
     from .core.workspaces import WorkSpace
     import os
 
     ws = WorkSpace(os.getcwd())
     client = PKG_CONFIG.get_client(ws)
-    cli = PKG_CONFIG.build_cli(client)
-    cli()
+    return PKG_CONFIG.build_cli(client)

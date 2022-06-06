@@ -1,4 +1,5 @@
 def test_cli():
-    from myfl.pkg import run_cli
+    from myfl.pkg import get_cli
 
-    run_cli()
+    cli = get_cli()
+    cli()

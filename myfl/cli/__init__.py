@@ -1,4 +1,18 @@
 def create_cli(app: "App"):
+    import typer
+
+    common_opt = {"no_args_is_help": True}
+
+    app = typer.Typer(**common_opt)
+    config = typer.Typer(**common_opt)
+
+    @app.command()
+    def init(use_remote: bool = True):
+        typer.echo("asdfas")
+
+    app.add_typer(config, name="config")
+
+    return app
 
     from myfl.core.workspace import WorkSpace as Config, LocalRepository
     from myfl.server_factories import build_server
