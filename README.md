@@ -35,6 +35,8 @@ import os
 from myfl import WorkSpace, TempWorkSpace
 
 print(WorkSpace(os.getcwd()).get_client("default").dataset.list())
+
+ws = WorkSpace(os.getcwd())
 ```
 
 ``` shell

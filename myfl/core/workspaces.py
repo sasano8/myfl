@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Iterable, Union, Any
 import os
 from shutil import rmtree
-
+from io import BufferedReader
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -48,11 +48,11 @@ class FileInfo(BaseModel):
 
 class WorkSpace:
     @classmethod
-    def read_model(cls, fd, info: FileInfo):
+    def read_model(cls, fd: BufferedReader, info: FileInfo):
         return fd.read()
 
     @classmethod
-    def write_model(cls, fd, model):
+    def write_model(cls, fd: BufferedReader, model):
         fd.write(model)
 
     def __init__(self, dir: Union[str, Path, tempfile.TemporaryDirectory]):
@@ -100,7 +100,10 @@ class WorkSpace:
         if hasattr(self, "temp"):
             self.temp.__exit__(*args, **kwargs)
 
-    def get_safe_path(self, path) -> Path:
+    def get_safe_path(self, path: str) -> Path:
+        if not isinstance(path, str):
+            raise ValueError()
+
         if "/" in path:
             raise ValueError()
 
@@ -109,7 +112,7 @@ class WorkSpace:
 
         return self / path
 
-    def list(self, path, *args, **kwargs) -> Iterable[FileInfo]:
+    def list(self, path: str, *args, **kwargs) -> Iterable[FileInfo]:
         p = self.get_safe_path(path)
         return (
             FileInfo.create_from_path(x) for x in p.iterdir() if x.name != ".gitignore"
@@ -132,7 +135,7 @@ class WorkSpace:
         with open(info.path, mode="rb") as f:
             return self.read_model(f, info)
 
-    def put(self, path, model) -> FileInfo:
+    def put(self, path: str, model) -> FileInfo:
         p = self.get_safe_path(path)
         if p.exists():
             ...
@@ -143,7 +146,7 @@ class WorkSpace:
             self.write_model(f, model)
             return FileInfo.create_from_path(p)
 
-    def delete(self, path, *args, **kwargs) -> Union[FileInfo, None]:
+    def delete(self, path: str, *args, **kwargs) -> Union[FileInfo, None]:
         info = self.get_info(path)
         if not info:
             return None

@@ -1,7 +1,7 @@
 # from myfl import WorkSpace
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 
 class IItem:
@@ -14,31 +14,37 @@ class Item(BaseModel):
     created_at: datetime = datetime.utcnow()
 
 
+@runtime_checkable
 class IWorkspace(Protocol):
     def login(self, user, pw):
         raise NotImplementedError()
 
 
+@runtime_checkable
 class IConfigStore(Protocol):
     def list(self):
         raise NotImplementedError()
 
 
+@runtime_checkable
 class IDataStore(Protocol):
     def list(self):
         raise NotImplementedError()
 
 
+@runtime_checkable
 class IBaseModelStore(Protocol):
     def list(self):
         raise NotImplementedError()
 
 
+@runtime_checkable
 class IModelStore(Protocol):
     def list(self):
         raise NotImplementedError()
 
 
+@runtime_checkable
 class IFLConfigStore(Protocol):
     def list(self):
         raise NotImplementedError()

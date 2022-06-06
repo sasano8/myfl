@@ -1,4 +1,5 @@
 if __name__ == "__main__":
-    from .cli import app
 
-    app()
+    from .pkg import run_cli
+
+    run_cli()

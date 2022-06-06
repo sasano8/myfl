@@ -3,13 +3,13 @@ from pydantic import BaseModel
 from typing import List, Dict, Any, Tuple
 
 
-class Config(BaseModel):
+class WsConfig(BaseModel):
     inherit: List[str] = []
     # env: Dict[str, Dict[str, Any]]
     clients: Dict[str, Tuple[str, Dict[str, Any]]]
 
 
-conf = Config(
+conf = WsConfig(
     inherit=["../conf.json"],
     clients={
         "default": ["local", {}],
